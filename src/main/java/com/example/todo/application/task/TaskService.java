@@ -1,6 +1,8 @@
-package com.example.todo.service.task;
+package com.example.todo.application.task;
 
-import com.example.todo.repository.task.TaskRepository;
+import com.example.todo.domain.task.Task;
+import com.example.todo.domain.task.TaskRepository;
+import com.example.todo.domain.task.TaskSearchCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,22 +16,22 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public List<TaskEntity> find(TaskSearchEntity searchEntity) {
-        return taskRepository.select(searchEntity);
+    public List<Task> find(TaskSearchCondition condition) {
+        return taskRepository.select(condition);
     }
 
-    public Optional<TaskEntity> findById(long taskId) {
+    public Optional<Task> findById(long taskId) {
         return taskRepository.selectById(taskId);
     }
 
     @Transactional
-    public void create(TaskEntity newEntity) {
-        taskRepository.insert(newEntity);
+    public void create(Task newTask) {
+        taskRepository.insert(newTask);
     }
 
     @Transactional
-    public void update(TaskEntity entity) {
-        taskRepository.update(entity);
+    public void update(Task task) {
+        taskRepository.update(task);
     }
 
     @Transactional

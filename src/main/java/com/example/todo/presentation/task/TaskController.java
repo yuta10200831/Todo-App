@@ -1,6 +1,6 @@
-package com.example.todo.controller.task;
+package com.example.todo.presentation.task;
 
-import com.example.todo.service.task.TaskService;
+import com.example.todo.application.task.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +23,7 @@ public class TaskController {
 
     @GetMapping
     public String list(TaskSearchForm searchForm, Model model) {
-        var taskList = taskService.find(searchForm.toEntity())
+        var taskList = taskService.find(searchForm.toCondition())
                 .stream()
                 .map(TaskDTO::toDTO)
                 .toList();
@@ -52,14 +52,14 @@ public class TaskController {
         if (bindingResult.hasErrors()) {
             return showCreationForm(form, model);
         }
-        taskService.create(form.toEntity());
+        taskService.create(form.toTask());
         return "redirect:/tasks";
     }
 
     @GetMapping("/{id}/editForm")
     public String showEditForm(@PathVariable("id") long id, Model model) {
         var form = taskService.findById(id)
-                .map(TaskForm::fromEntity)
+                .map(TaskForm::fromTask)
                 .orElseThrow(TaskNotFoundException::new);
         model.addAttribute("taskForm", form);
         model.addAttribute("mode", "EDIT");
@@ -77,8 +77,8 @@ public class TaskController {
             model.addAttribute("mode", "EDIT");
             return "tasks/form";
         }
-        var entity = form.toEntity(id);
-        taskService.update(entity);
+        var task = form.toTask(id);
+        taskService.update(task);
         return "redirect:/tasks/{id}";
     }
 

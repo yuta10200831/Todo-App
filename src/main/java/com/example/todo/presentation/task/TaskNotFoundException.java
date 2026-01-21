@@ -1,4 +1,4 @@
-package com.example.todo.controller.task;
+package com.example.todo.presentation.task;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

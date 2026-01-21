@@ -1,7 +1,7 @@
-package com.example.todo.repository.task;
+package com.example.todo.infrastructure.task.mybatis;
 
-import com.example.todo.service.task.TaskEntity;
-import com.example.todo.service.task.TaskSearchEntity;
+import com.example.todo.domain.task.Task;
+import com.example.todo.domain.task.TaskSearchCondition;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Mapper
-public interface TaskRepository {
+public interface TaskMapper {
 
     @Select("""
             <script>
@@ -33,16 +33,16 @@ public interface TaskRepository {
               </where>
             </script>
             """)
-    List<TaskEntity> select(@Param("condition") TaskSearchEntity condition);
+    List<Task> select(@Param("condition") TaskSearchCondition condition);
 
     @Select("SELECT id, summary, description, status FROM tasks WHERE id = #{taskId}")
-    Optional<TaskEntity> selectById(@Param("taskId") long taskId);
+    Optional<Task> selectById(@Param("taskId") long taskId);
 
     @Insert("""
             INSERT INTO tasks (summary, description, status)
             VALUES (#{task.summary}, #{task.description}, #{task.status})
             """)
-    void insert(@Param("task") TaskEntity newEntity);
+    void insert(@Param("task") Task task);
 
     @Update("""
             UPDATE tasks
@@ -53,7 +53,7 @@ public interface TaskRepository {
             WHERE
               id = #{task.id}
             """)
-    void update(@Param("task") TaskEntity entity);
+    void update(@Param("task") Task task);
 
     @Delete("DELETE FROM tasks WHERE id = #{taskId}")
     void delete(@Param("taskId") long id);

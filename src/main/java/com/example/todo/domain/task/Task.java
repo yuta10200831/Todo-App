@@ -1,6 +1,6 @@
-package com.example.todo.service.task;
+package com.example.todo.domain.task;
 
-public record TaskEntity(
+public record Task(
         Long id,
         String summary,
         String description,
