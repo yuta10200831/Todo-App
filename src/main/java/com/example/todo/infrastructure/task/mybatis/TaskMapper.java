@@ -17,7 +17,7 @@ public interface TaskMapper {
 
     @Select("""
             <script>
-              SELECT id, summary, description, status
+              SELECT id, summary, description, status, deadline
               FROM tasks
               <where>
                 <if test='condition.summary != null and !condition.summary.isBlank()'>
@@ -35,12 +35,12 @@ public interface TaskMapper {
             """)
     List<Task> select(@Param("condition") TaskSearchCondition condition);
 
-    @Select("SELECT id, summary, description, status FROM tasks WHERE id = #{taskId}")
+    @Select("SELECT id, summary, description, status, deadline FROM tasks WHERE id = #{taskId}")
     Optional<Task> selectById(@Param("taskId") long taskId);
 
     @Insert("""
-            INSERT INTO tasks (summary, description, status)
-            VALUES (#{task.summary}, #{task.description}, #{task.status})
+            INSERT INTO tasks (summary, description, status, deadline)
+            VALUES (#{task.summary}, #{task.description}, #{task.status}, #{task.deadline})
             """)
     void insert(@Param("task") Task task);
 
@@ -49,7 +49,8 @@ public interface TaskMapper {
             SET
               summary     = #{task.summary},
               description = #{task.description},
-              status      = #{task.status}
+              status      = #{task.status},
+              deadline    = #{task.deadline}
             WHERE
               id = #{task.id}
             """)
