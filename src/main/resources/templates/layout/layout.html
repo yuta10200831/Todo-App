@@ -28,6 +28,13 @@
                         <a class="nav-link" th:href="@{/tasks}">タスク一覧</a>
                     </li>
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post">
+                            <button class="btn btn-link nav-link" type="submit">ログアウト</button>
+                        </form>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>

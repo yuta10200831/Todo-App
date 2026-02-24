@@ -1,8 +1,15 @@
-CREATE TABLE tasks
+CREATE TABLE IF NOT EXISTS tasks
 (
   id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   summary VARCHAR(256) NOT NULL,
   description TEXT,
   status VARCHAR(256) NOT NULL,
   deadline DATE
+);
+-- usersテーブルの作成
+CREATE TABLE IF NOT EXISTS users
+(
+  username VARCHAR(50) NOT NULL PRIMARY KEY,
+  password VARCHAR(100) NOT NULL,
+  authority VARCHAR(50) NOT NULL
 );
