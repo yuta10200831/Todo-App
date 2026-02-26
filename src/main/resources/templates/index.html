@@ -6,6 +6,21 @@
 >
 <head>
     <title>トップページ</title>
+    <!-- CSSを追加: 土日の色を変える -->
+    <style>
+        /* 土曜日の背景色 */
+        .fc-day-sat {
+            background-color: #eaf4ff; /* 薄い青 */
+        }
+        /* 日曜日の背景色 */
+        .fc-day-sun {
+            background-color: #ffeaea; /* 薄い赤 */
+        }
+        /* 祝日のイベントスタイル */
+        .holiday-event {
+            border: none;
+        }
+    </style>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
     <script th:inline="javascript">
       document.addEventListener('DOMContentLoaded', function() {
@@ -15,7 +30,7 @@
         var tasks = /*[[${taskList}]]*/ [];
         
         // FullCalendar用のイベント形式に変換
-        var calendarEvents = tasks.map(function(task) {
+        var taskEvents = tasks.map(function(task) {
             return {
                 title: task.summary,
                 start: task.deadline,
@@ -34,13 +49,65 @@
             return '#6c757d'; // Secondary
         }
 
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          locale: 'ja',
-          height: 'auto',
-          events: calendarEvents
-        });
-        calendar.render();
+        // 祝日APIを取得してカレンダーを表示
+        fetch('https://holidays-jp.github.io/api/v1/date.json')
+            .then(response => response.json())
+            .then(data => {
+                // 祝日データをイベント形式に変換
+                var holidayEvents = [];
+                
+                Object.keys(data).forEach(function(date) {
+                    var holidayName = data[date];
+                    
+                    // 1. 背景色用のイベント
+                    holidayEvents.push({
+                        start: date,
+                        display: 'background',
+                        backgroundColor: '#ffeaea', // 日曜日と同じ薄い赤
+                        className: 'holiday-event'
+                    });
+                    
+                    // 2. 祝日名表示用のイベント
+                    holidayEvents.push({
+                        title: holidayName,
+                        start: date,
+                        allDay: true,
+                        backgroundColor: 'transparent',
+                        borderColor: 'transparent',
+                        textColor: '#ff0000', // 赤文字
+                        className: 'holiday-text'
+                    });
+                });
+
+                // すべてのイベントを統合
+                var allEvents = taskEvents.concat(holidayEvents);
+
+                renderCalendar(allEvents);
+            })
+            .catch(error => {
+                console.error('祝日データの取得に失敗しました:', error);
+                // エラー時はタスクのみで表示
+                renderCalendar(taskEvents);
+            });
+
+        function renderCalendar(events) {
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ja',
+                height: 'auto',
+                events: events,
+                eventClick: function(info) {
+                    // URLがある場合（タスク）のみ遷移
+                    if (info.event.url) {
+                        // デフォルトの動作（新しいタブなど）を防ぐ必要があれば preventDefault
+                        // 今回は同一ウィンドウ遷移ならそのままでOKだが、
+                        // FullCalendarの仕様上、urlプロパティがあれば自動で遷移する
+                        // ここでは特に何もしなくてよいが、祝日クリック時に何もしないように制御
+                    }
+                }
+            });
+            calendar.render();
+        }
       });
     </script>
 </head>
