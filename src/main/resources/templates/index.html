@@ -95,16 +95,7 @@
                 initialView: 'dayGridMonth',
                 locale: 'ja',
                 height: 'auto',
-                events: events,
-                eventClick: function(info) {
-                    // URLがある場合（タスク）のみ遷移
-                    if (info.event.url) {
-                        // デフォルトの動作（新しいタブなど）を防ぐ必要があれば preventDefault
-                        // 今回は同一ウィンドウ遷移ならそのままでOKだが、
-                        // FullCalendarの仕様上、urlプロパティがあれば自動で遷移する
-                        // ここでは特に何もしなくてよいが、祝日クリック時に何もしないように制御
-                    }
-                }
+                events: events
             });
             calendar.render();
         }
