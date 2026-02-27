@@ -29,24 +29,25 @@
         // Thymeleafからタスクリストを受け取る
         var tasks = /*[[${taskList}]]*/ [];
         
-        // FullCalendar用のイベント形式に変換
+        // FullCalendar用のイベント形式に変換（優先度で色分け）
         var taskEvents = tasks.map(function(task) {
+            var color = getPriorityColor(task.priority);
             return {
                 title: task.summary,
                 start: task.deadline,
                 url: '/tasks/' + task.id,
-                backgroundColor: getStatusColor(task.status),
-                borderColor: getStatusColor(task.status)
+                backgroundColor: color,
+                borderColor: color
             };
         }).filter(function(event) {
             return event.start != null; // 期限がないタスクは除外
         });
 
-        function getStatusColor(status) {
-            if (status === 'TODO') return '#0d6efd'; // Primary
-            if (status === 'DOING') return '#ffc107'; // Warning
-            if (status === 'DONE') return '#198754'; // Success
-            return '#6c757d'; // Secondary
+        function getPriorityColor(priority) {
+            if (priority === 'HIGH') return '#dc3545';   // 赤
+            if (priority === 'MEDIUM') return '#ffc107'; // 黄
+            if (priority === 'LOW') return '#0dcaf0';    // 青
+            return '#6c757d'; // デフォルト
         }
 
         // 祝日APIを取得してカレンダーを表示

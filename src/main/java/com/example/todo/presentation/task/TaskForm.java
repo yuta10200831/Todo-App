@@ -1,6 +1,7 @@
 package com.example.todo.presentation.task;
 
 import com.example.todo.domain.task.Task;
+import com.example.todo.domain.task.TaskPriority;
 import com.example.todo.domain.task.TaskStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -15,8 +16,10 @@ public record TaskForm(
         String summary,
         String description,
         @NotBlank
-        @Pattern(regexp="TODO|DOING|DONE", message = "Todo, Doing, Done のいずれかを選択してください")
+        @Pattern(regexp = "TODO|DOING|DONE", message = "Todo, Doing, Done のいずれかを選択してください")
         String status,
+        @Pattern(regexp = "^(HIGH|MEDIUM|LOW)?$", message = "優先度を選択してください")
+        String priority,
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         LocalDate deadline
 ) {
@@ -25,16 +28,20 @@ public record TaskForm(
                 task.summary(),
                 task.description(),
                 task.status().name(),
+                task.priority().name(),
                 task.deadline()
         );
     }
 
     public Task toTask() {
-        return new Task(null, summary(), description(), TaskStatus.valueOf(status()), deadline());
+        return new Task(null, summary(), description(), TaskStatus.valueOf(status()), toPriority(), deadline());
     }
 
-
     public Task toTask(long id) {
-        return new Task(id, summary(), description(), TaskStatus.valueOf(status()), deadline());
+        return new Task(id, summary(), description(), TaskStatus.valueOf(status()), toPriority(), deadline());
+    }
+
+    private TaskPriority toPriority() {
+        return (priority() == null || priority().isBlank()) ? TaskPriority.MEDIUM : TaskPriority.valueOf(priority());
     }
 }

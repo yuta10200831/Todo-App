@@ -43,6 +43,17 @@ public class TaskController {
 
     @GetMapping("/creationForm")
     public String showCreationForm(@ModelAttribute TaskForm form, Model model) {
+        // 作成時は優先度のデフォルトをMEDIUMに
+        var formToShow = (form.priority() == null || form.priority().isBlank())
+                ? new TaskForm(
+                form.summary() != null ? form.summary() : "",
+                form.description() != null ? form.description() : "",
+                form.status() != null ? form.status() : "TODO",
+                "MEDIUM",
+                form.deadline()
+        )
+                : form;
+        model.addAttribute("taskForm", formToShow);
         model.addAttribute("mode", "CREATE");
         return "tasks/form";
     }
@@ -50,7 +61,9 @@ public class TaskController {
     @PostMapping
     public String create(@Validated TaskForm form, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return showCreationForm(form, model);
+            model.addAttribute("taskForm", form);
+            model.addAttribute("mode", "CREATE");
+            return "tasks/form";
         }
         taskService.create(form.toTask());
         return "redirect:/tasks";
@@ -62,6 +75,7 @@ public class TaskController {
                 .map(TaskForm::fromTask)
                 .orElseThrow(TaskNotFoundException::new);
         model.addAttribute("taskForm", form);
+        model.addAttribute("id", id);
         model.addAttribute("mode", "EDIT");
         return "tasks/form";
     }
@@ -74,6 +88,8 @@ public class TaskController {
             Model model
     ) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("taskForm", form);
+            model.addAttribute("id", id);
             model.addAttribute("mode", "EDIT");
             return "tasks/form";
         }

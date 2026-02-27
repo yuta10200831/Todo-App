@@ -9,6 +9,7 @@ public record TaskDTO(
         String summary,
         String description,
         String status,
+        String priority,
         LocalDate deadline
 ) {
     public static TaskDTO toDTO(Task task) {
@@ -17,6 +18,7 @@ public record TaskDTO(
                 task.summary(),
                 task.description(),
                 task.status().name(),
+                task.priority().name(),
                 task.deadline()
         );
     }
