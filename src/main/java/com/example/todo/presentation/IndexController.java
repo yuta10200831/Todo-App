@@ -19,7 +19,7 @@ public class IndexController {
     // http:localhost:8080/ -> トップページを表示
     @GetMapping("/")
     public String index(Model model) {
-        var taskList = taskService.find(new TaskSearchCondition(null, Collections.emptyList()))
+        var taskList = taskService.find(new TaskSearchCondition(null, Collections.emptyList(), "PRIORITY"))
                 .stream()
                 .map(TaskDTO::toDTO)
                 .toList();

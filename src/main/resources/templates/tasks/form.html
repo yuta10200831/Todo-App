@@ -33,6 +33,15 @@
                 <span th:errors="*{status}" class="invalid-feedback"></span>
             </div>
             <div class="form-group mt-3">
+                <label for="priorityInput" class="form-label">優先度</label>
+                <select id="priorityInput" th:field="*{priority}" class="form-control" th:errorclass="is-invalid">
+                    <option value="HIGH">高</option>
+                    <option value="MEDIUM">中</option>
+                    <option value="LOW">低</option>
+                </select>
+                <span th:errors="*{priority}" class="invalid-feedback"></span>
+            </div>
+            <div class="form-group mt-3">
                 <label for="deadlineInput" class="form-label">期限</label>
                 <input type="date" id="deadlineInput" th:field="*{deadline}" class="form-control" th:errorclass="is-invalid">
                 <span th:errors="*{deadline}" class="invalid-feedback"></span>

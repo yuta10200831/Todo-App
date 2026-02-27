@@ -5,12 +5,17 @@ import java.util.Optional;
 
 public record TaskSearchDTO(
         String summary,
-        List<String> statusList
+        List<String> statusList,
+        String sortBy
 ) {
 
     public boolean isChecked(String status) {
         return Optional.ofNullable(statusList)
                 .map(l -> l.contains(status))
                 .orElse(false);
+    }
+
+    public boolean isSortByPriority() {
+        return "PRIORITY".equals(sortBy);
     }
 }

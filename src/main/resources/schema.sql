@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS tasks
   summary VARCHAR(256) NOT NULL,
   description TEXT,
   status VARCHAR(256) NOT NULL,
-  deadline DATE
+  deadline DATE,
+  priority VARCHAR(10) NOT NULL DEFAULT 'MEDIUM'
 );
 -- usersテーブルの作成
 CREATE TABLE IF NOT EXISTS users
